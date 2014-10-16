@@ -11,9 +11,10 @@ namespace ParsingTelNumbers.Config
         {
             var tasks = new List<Task<IEnumerable<InfoHolder>>>
             {
-                Motosale.GetEquip(),
-                Motosale.GetMoto(),
-                Motosale.GetSpare()
+                //Motosale.GetEquip(),
+                //Motosale.GetMoto(),
+                //Motosale.GetSpare(),
+                Ria.GetSpare()
             };
 
             var allDataInArray = await Task.WhenAll(tasks);

@@ -292,7 +292,7 @@ namespace ParsingTelNumbers.Sites
                         .Select(x => x.First())
                         .ToList();
 
-                    DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.spare, DateTime.Now.ToString("dd.MM.yyyy"));
+                    DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.equip, DateTime.Now.ToString("dd.MM.yyyy"));
 
                     //using (var sw = new StreamWriter("new"))
                     //{
@@ -443,7 +443,7 @@ namespace ParsingTelNumbers.Sites
                         .Select(x => x.First())
                         .ToList();
 
-                    DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.spare, DateTime.Now.ToString("dd.MM.yyyy"));
+                    DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.moto, DateTime.Now.ToString("dd.MM.yyyy"));
 
                     //using (var sw = new StreamWriter("new"))
                     //{
