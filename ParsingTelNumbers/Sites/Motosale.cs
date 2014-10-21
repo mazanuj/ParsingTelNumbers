@@ -129,36 +129,13 @@ namespace ParsingTelNumbers.Sites
                         };
                     }).Where(infoHolder => infoHolder != null));
 
-                    //using (var sw = new StreamWriter("old"))
-                    //{
-                    //    foreach (var infoHolder in holdersList)
-                    //    {
-                    //        sw.WriteLine(infoHolder.Phone);
-                    //    }
-                    //}
+                    DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.spare, DateTime.Now.ToString("dd.MM.yyyy"));
 
-                    holdersList = holdersList
+                    return holdersList
                         .Where(x => !string.IsNullOrEmpty(x.Phone))
                         .GroupBy(holder => holder.Phone)
                         .Select(x => x.First())
                         .ToList();
-
-                    DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.spare, DateTime.Now.ToString("dd.MM.yyyy"));
-
-                    //using (var sw = new StreamWriter("new"))
-                    //{
-                    //    foreach (var infoHolder in holdersList)
-                    //    {
-                    //        sw.WriteLine(infoHolder.Phone);
-                    //    }
-                    //}
-                    //var i = 1;
-                    //foreach (var infoHolder in holdersList)
-                    //{
-                    //    Console.WriteLine(i++ + "-> " + infoHolder.Phone);
-                    //}
-
-                    return holdersList;
                 });
         }
 
@@ -278,36 +255,13 @@ namespace ParsingTelNumbers.Sites
                         };
                     }).Where(infoHolder => infoHolder != null));
 
-                    //using (var sw = new StreamWriter("old"))
-                    //{
-                    //    foreach (var infoHolder in holdersList)
-                    //    {
-                    //        sw.WriteLine(infoHolder.Phone);
-                    //    }
-                    //}
+                    DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.equip, DateTime.Now.ToString("dd.MM.yyyy"));
 
-                    holdersList = holdersList
+                    return holdersList
                         .Where(x => !string.IsNullOrEmpty(x.Phone))
                         .GroupBy(holder => holder.Phone)
                         .Select(x => x.First())
                         .ToList();
-
-                    DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.equip, DateTime.Now.ToString("dd.MM.yyyy"));
-
-                    //using (var sw = new StreamWriter("new"))
-                    //{
-                    //    foreach (var infoHolder in holdersList)
-                    //    {
-                    //        sw.WriteLine(infoHolder.Phone);
-                    //    }
-                    //}
-                    //var i = 1;
-                    //foreach (var infoHolder in holdersList)
-                    //{
-                    //    Console.WriteLine(i++ + "-> " + infoHolder.Phone);
-                    //}
-
-                    return holdersList;
                 });
         }
 
@@ -429,36 +383,13 @@ namespace ParsingTelNumbers.Sites
                         };
                     }).Where(infoHolder => infoHolder != null));
 
-                    //using (var sw = new StreamWriter("old"))
-                    //{
-                    //    foreach (var infoHolder in holdersList)
-                    //    {
-                    //        sw.WriteLine(infoHolder.Phone);
-                    //    }
-                    //}
+                    DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.moto, DateTime.Now.ToString("dd.MM.yyyy"));
 
-                    holdersList = holdersList
+                    return holdersList
                         .Where(x => !string.IsNullOrEmpty(x.Phone))
                         .GroupBy(holder => holder.Phone)
                         .Select(x => x.First())
                         .ToList();
-
-                    DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.moto, DateTime.Now.ToString("dd.MM.yyyy"));
-
-                    //using (var sw = new StreamWriter("new"))
-                    //{
-                    //    foreach (var infoHolder in holdersList)
-                    //    {
-                    //        sw.WriteLine(infoHolder.Phone);
-                    //    }
-                    //}
-                    //var i = 1;
-                    //foreach (var infoHolder in holdersList)
-                    //{
-                    //    Console.WriteLine(i++ + "-> " + infoHolder.Phone);
-                    //}
-
-                    return holdersList;
                 });
         }
     }

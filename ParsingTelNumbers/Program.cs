@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using ParsingTelNumbers.Config;
 
@@ -19,7 +17,7 @@ namespace ParsingTelNumbers
             {
                 Console.WriteLine(i++ + "-> " + infoHolder.Phone);
             }
-            //using (var sw = new StreamWriter("data.xls", true, Encoding.GetEncoding("windows-1251")))
+            //using (var sw = new StreamWriter("data.txt", true, Encoding.GetEncoding("windows-1251")))
             //{
             //    sw.WriteLine(DateTime.Now.Date.ToString("d"));
             //    sw.WriteLine("САЙТ\tКАТЕГОРИЯ\tГОРОД\tИМЯ\tТЕЛЕФОН");

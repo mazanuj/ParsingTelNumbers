@@ -8,7 +8,7 @@ namespace ParsingTelNumbers.XmlWorker
 {
     internal static class DateXmlWorker
     {
-        private const string XmlFilePath = @"Config\Main.config";
+        private const string XmlFilePath = @"Main.config";
 
         internal static string GetDate(SiteEnum site, DirectionEnum direction)
         {

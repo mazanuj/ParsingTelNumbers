@@ -14,7 +14,8 @@ namespace ParsingTelNumbers.Config
                 //Motosale.GetEquip(),
                 //Motosale.GetMoto(),
                 //Motosale.GetSpare(),
-                Ria.GetSpare()
+                //Ria.GetSpare(),
+                Ria.GetMoto()
             };
 
             var allDataInArray = await Task.WhenAll(tasks);
