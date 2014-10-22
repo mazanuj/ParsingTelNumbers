@@ -11,11 +11,12 @@ namespace ParsingTelNumbers.Config
         {
             var tasks = new List<Task<IEnumerable<InfoHolder>>>
             {
-                //Motosale.GetEquip(),
-                //Motosale.GetMoto(),
-                //Motosale.GetSpare(),
-                //Ria.GetSpare(),
-                Ria.GetMoto()
+                Motosale.GetEquip(),
+                Motosale.GetMoto(),
+                Motosale.GetSpare(),
+                Ria.GetSpare(),
+                Ria.GetMoto(),
+                Ria.GetAqua()
             };
 
             var allDataInArray = await Task.WhenAll(tasks);
@@ -27,12 +28,7 @@ namespace ParsingTelNumbers.Config
                 resultData.AddRange(item);
             }
 
-            //Distinct
-            return resultData
-                .Where(x => !string.IsNullOrEmpty(x.Phone))
-                .GroupBy(holder => holder.Phone)
-                .Select(x => x.First())
-                .ToList();
+            return resultData;
         }
     }
 }

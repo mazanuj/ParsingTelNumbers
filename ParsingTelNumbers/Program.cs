@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ParsingTelNumbers.Config;
 
@@ -12,18 +16,21 @@ namespace ParsingTelNumbers
             Task.WaitAll(getAllDataTask);
             var resultData = getAllDataTask.Result;
 
-            var i = 1;
-            foreach (var infoHolder in resultData)
+            var infoHolders = resultData as IList<InfoHolder> ?? resultData.ToList();
+            infoHolders = infoHolders
+                .Where(x => x != null &&
+                            !string.IsNullOrEmpty(x.Phone))
+                .GroupBy(holder => holder.Phone)
+                .Select(x => x.First())
+                .ToList();
+
+            using (var sw = new StreamWriter("data.txt", true, Encoding.GetEncoding("windows-1251")))
             {
-                Console.WriteLine(i++ + "-> " + infoHolder.Phone);
+                sw.WriteLine(DateTime.Now.Date.ToString("d"));
+                sw.WriteLine("САЙТ\tКАТЕГОРИЯ\tГОРОД\tИМЯ\tТЕЛЕФОН");
+                foreach (var j in infoHolders)
+                    sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", j.Site, j.Direction, j.City, j.Name, j.Phone);
             }
-            //using (var sw = new StreamWriter("data.txt", true, Encoding.GetEncoding("windows-1251")))
-            //{
-            //    sw.WriteLine(DateTime.Now.Date.ToString("d"));
-            //    sw.WriteLine("САЙТ\tКАТЕГОРИЯ\tГОРОД\tИМЯ\tТЕЛЕФОН");
-            //    foreach (var i in resultData)
-            //        sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", i.Site, i.Direction, i.City, i.Name, i.Phone);
-            //}
 
             Console.ReadKey();
         }

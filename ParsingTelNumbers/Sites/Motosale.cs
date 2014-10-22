@@ -131,11 +131,7 @@ namespace ParsingTelNumbers.Sites
 
                     DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.spare, DateTime.Now.ToString("dd.MM.yyyy"));
 
-                    return holdersList
-                        .Where(x => !string.IsNullOrEmpty(x.Phone))
-                        .GroupBy(holder => holder.Phone)
-                        .Select(x => x.First())
-                        .ToList();
+                    return holdersList;
                 });
         }
 
@@ -257,11 +253,7 @@ namespace ParsingTelNumbers.Sites
 
                     DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.equip, DateTime.Now.ToString("dd.MM.yyyy"));
 
-                    return holdersList
-                        .Where(x => !string.IsNullOrEmpty(x.Phone))
-                        .GroupBy(holder => holder.Phone)
-                        .Select(x => x.First())
-                        .ToList();
+                    return holdersList;
                 });
         }
 
@@ -385,11 +377,7 @@ namespace ParsingTelNumbers.Sites
 
                     DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.moto, DateTime.Now.ToString("dd.MM.yyyy"));
 
-                    return holdersList
-                        .Where(x => !string.IsNullOrEmpty(x.Phone))
-                        .GroupBy(holder => holder.Phone)
-                        .Select(x => x.First())
-                        .ToList();
+                    return holdersList;
                 });
         }
     }
