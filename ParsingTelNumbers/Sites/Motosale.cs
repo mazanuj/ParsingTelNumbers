@@ -69,64 +69,62 @@ namespace ParsingTelNumbers.Sites
                     var enumerable = urls as IList<string> ?? urls.ToList();
                     holdersList.AddRange(enumerable.Select(url =>
                     {
-                        string h;
                         try
                         {
                             var hb = new WebClient().DownloadData(url.Replace("&#", ""));
-                            h = Encoding.GetEncoding("windows-1251").GetString(hb);
+                            var h = Encoding.GetEncoding("windows-1251").GetString(hb);
+
+                            var docHtml = new HtmlDocument();
+                            docHtml.LoadHtml(h);
+
+                            var phone = docHtml.DocumentNode
+
+                                .Descendants("a")
+                                .First(
+                                    x =>
+                                        x.Attributes.Contains("href") &&
+                                        x.Attributes["href"].Value.Contains("javascript:window.open"))
+                                .ParentNode
+                                .InnerText;
+                            phone = Regex.Match(phone, @"(?<=тел.: )\.?\d{10}").Value;
+                            if (Regex.Matches(phone, @"\d").Count < 10)
+                                return new InfoHolder();
+
+                            var name = docHtml.DocumentNode
+                                .Descendants("a")
+                                .First(
+                                    x =>
+                                        x.Attributes.Contains("href") &&
+                                        x.Attributes["href"].Value.Contains("javascript:window.open")).InnerText;
+
+                            var city = docHtml.DocumentNode
+                                .Descendants("a")
+                                .First(
+                                    x =>
+                                        x.Attributes.Contains("href") &&
+                                        x.Attributes["href"].Value.Contains("javascript:window.open"))
+                                .ParentNode
+                                .ParentNode
+                                .ParentNode
+                                .ChildNodes
+                                .First(y => y.InnerText.Contains("Регион:"))
+                                .ChildNodes
+                                .Last(x => x.Name == "td")
+                                .InnerText;
+
+                            return new InfoHolder
+                            {
+                                Site = SiteEnum.motosale,
+                                Direction = DirectionEnum.spare,
+                                Name = name.Contains("сообщ. писать здесь") ? "-" : name,
+                                Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                                City = city
+                            };
                         }
                         catch
                         {
                             return new InfoHolder();
                         }
-
-
-                        var docHtml = new HtmlDocument();
-                        docHtml.LoadHtml(h);
-
-                        var phone = docHtml.DocumentNode
-
-                            .Descendants("a")
-                            .First(
-                                x =>
-                                    x.Attributes.Contains("href") &&
-                                    x.Attributes["href"].Value.Contains("javascript:window.open"))
-                            .ParentNode
-                            .InnerText;
-                        phone = Regex.Match(phone, @"(?<=тел.: )\.?\d{10}").Value;
-                        if (!Regex.IsMatch(phone, @"\d*"))
-                            return new InfoHolder();
-
-                        var name = docHtml.DocumentNode
-                            .Descendants("a")
-                            .First(
-                                x =>
-                                    x.Attributes.Contains("href") &&
-                                    x.Attributes["href"].Value.Contains("javascript:window.open")).InnerText;
-
-                        var city = docHtml.DocumentNode
-                            .Descendants("a")
-                            .First(
-                                x =>
-                                    x.Attributes.Contains("href") &&
-                                    x.Attributes["href"].Value.Contains("javascript:window.open"))
-                            .ParentNode
-                            .ParentNode
-                            .ParentNode
-                            .ChildNodes
-                            .First(y => y.InnerText.Contains("Регион:"))
-                            .ChildNodes
-                            .Last(x => x.Name == "td")
-                            .InnerText;
-
-                        return new InfoHolder
-                        {
-                            Site = SiteEnum.motosale,
-                            Direction = DirectionEnum.spare,
-                            Name = name.Contains("сообщ. писать здесь") ? "-" : name,
-                            Phone = phone.StartsWith("0") ? "38" + phone : phone,
-                            City = city
-                        };
                     }).Where(infoHolder => infoHolder != null));
 
                     DateXmlWorker.SetDate(SiteEnum.motosale, DirectionEnum.spare, DateTime.Now.ToString("dd.MM.yyyy"));
@@ -216,7 +214,7 @@ namespace ParsingTelNumbers.Sites
                             .ParentNode
                             .InnerText;
                         phone = Regex.Match(phone, @"(?<=тел.: )\.?\d{10}").Value;
-                        if (!Regex.IsMatch(phone, @"\d*"))
+                        if (Regex.Matches(phone, @"\d").Count < 10)
                             return new InfoHolder();
 
                         var name = docHtml.DocumentNode
@@ -246,7 +244,7 @@ namespace ParsingTelNumbers.Sites
                             Site = SiteEnum.motosale,
                             Direction = DirectionEnum.equip,
                             Name = name.Contains("сообщ. писать здесь") ? "-" : name,
-                            Phone = phone.StartsWith("0") ? "38" + phone : phone,
+                            Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                             City = city
                         };
                     }).Where(infoHolder => infoHolder != null));
@@ -339,7 +337,7 @@ namespace ParsingTelNumbers.Sites
                             .ParentNode
                             .InnerText;
                         phone = Regex.Match(phone, @"(?<=тел.: )\.?\d{10}").Value;
-                        if (!Regex.IsMatch(phone, @"\d*"))
+                        if (Regex.Matches(phone, @"\d").Count < 10)
                             return new InfoHolder();
 
                         var name = docHtml.DocumentNode
@@ -370,7 +368,7 @@ namespace ParsingTelNumbers.Sites
                             Site = SiteEnum.motosale,
                             Direction = DirectionEnum.moto,
                             Name = name.Contains("сообщ. писать здесь") ? "-" : name,
-                            Phone = phone.StartsWith("0") ? "38" + phone : phone,
+                            Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                             City = city
                         };
                     }).Where(infoHolder => infoHolder != null));

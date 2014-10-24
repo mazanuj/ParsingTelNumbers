@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ParsingTelNumbers.Config;
+using ParsingTelNumbers.XmlWorker;
 
 namespace ParsingTelNumbers
 {
@@ -16,22 +15,17 @@ namespace ParsingTelNumbers
             Task.WaitAll(getAllDataTask);
             var resultData = getAllDataTask.Result;
 
-            var infoHolders = resultData as IList<InfoHolder> ?? resultData.ToList();
-            infoHolders = infoHolders
+            var tels = DataXmlWorker.GetTels();
+
+            DataXmlWorker.SetTels(resultData
                 .Where(x => x != null &&
-                            !string.IsNullOrEmpty(x.Phone))
+                            !string.IsNullOrEmpty(x.Phone) &&
+                            Regex.IsMatch(x.Phone, @"^380\d{9}$"))
                 .GroupBy(holder => holder.Phone)
-                .Select(x => x.First())
-                .ToList();
+                .Select(x => !tels.Contains(x.Key) ? x.First() : null)
+                .Where(x => x != null));
 
-            using (var sw = new StreamWriter("data.txt", true, Encoding.GetEncoding("windows-1251")))
-            {
-                sw.WriteLine(DateTime.Now.Date.ToString("d"));
-                sw.WriteLine("САЙТ\tКАТЕГОРИЯ\tГОРОД\tИМЯ\tТЕЛЕФОН");
-                foreach (var j in infoHolders)
-                    sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", j.Site, j.Direction, j.City, j.Name, j.Phone);
-            }
-
+            Console.WriteLine("Done");
             Console.ReadKey();
         }
     }

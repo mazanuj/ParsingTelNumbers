@@ -127,7 +127,9 @@ namespace ParsingTelNumbers.Sites
                                     Name = name,
                                     City = city,
                                     Direction = DirectionEnum.spare,
-                                    Phone = Regex.Replace(VARIABLE.ToString(), @"(\(|\)|\s|\-)", string.Empty),
+                                    Phone =
+                                        "38" +
+                                        Regex.Replace(VARIABLE.ToString(), @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                                     Site = SiteEnum.ria
                                 });
                         }
@@ -184,6 +186,8 @@ namespace ParsingTelNumbers.Sites
                         {
                             HtmlDocument doc;
                             string city;
+                            string viewAll;
+
                             try
                             {
                                 doc = new HtmlWeb().Load("http://auto.ria.com/blocks_search/view/auto/" + id);
@@ -195,19 +199,19 @@ namespace ParsingTelNumbers.Sites
                                     .ChildNodes
                                     .First(x => x.Name == "a")
                                     .InnerText;
+
+                                viewAll = "http://auto.ria.com" + doc.DocumentNode
+                                    .Descendants("span")
+                                    .First(x => x.Attributes.Contains("class") &&
+                                                x.Attributes["class"].Value == "view-all")
+                                    .ChildNodes
+                                    .First(x => x.Name == "a")
+                                    .Attributes["href"].Value;
                             }
                             catch
                             {
                                 return;
                             }
-                            var viewAll = "http://auto.ria.com" + doc.DocumentNode
-                                .Descendants("span")
-                                .First(x => x.Attributes.Contains("class") &&
-                                            x.Attributes["class"].Value == "view-all")
-                                .ChildNodes
-                                .First(x => x.Name == "a")
-                                .Attributes["href"].Value;
-
                             try
                             {
                                 var phone = doc.DocumentNode
@@ -221,7 +225,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.moto,
                                     Name = string.Empty,
-                                    Phone = "38" + Regex.Replace(phone, @"(^\+?38)?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                                     Site = SiteEnum.ria
                                 });
                             }
@@ -259,7 +263,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.moto,
                                     Name = Regex.Match(name, @"\w+(\s\w+){0,2}").Value,
-                                    Phone = "38" + Regex.Replace(phone, @"(^\+?38)?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                                     Site = SiteEnum.ria
                                 }));
                             }
@@ -271,6 +275,9 @@ namespace ParsingTelNumbers.Sites
                         foreach (var id in ids)
                         {
                             HtmlDocument doc;
+                            string city;
+                            string viewAll;
+
                             try
                             {
                                 doc = new HtmlWeb().Load("http://auto.ria.com/blocks_search/view/auto/" + id);
@@ -295,28 +302,28 @@ namespace ParsingTelNumbers.Sites
                                         return holdersList;
                                     continue;
                                 }
+
+
+                                city = doc.DocumentNode
+                                    .Descendants("span")
+                                    .First(x => x.Attributes.Contains("class") &&
+                                                x.Attributes["class"].Value == "city")
+                                    .ChildNodes
+                                    .First(x => x.Name == "a")
+                                    .InnerText;
+
+                                viewAll = "http://auto.ria.com" + doc.DocumentNode
+                                    .Descendants("span")
+                                    .First(x => x.Attributes.Contains("class") &&
+                                                x.Attributes["class"].Value == "view-all")
+                                    .ChildNodes
+                                    .First(x => x.Name == "a")
+                                    .Attributes["href"].Value;
                             }
                             catch
                             {
                                 continue;
                             }
-
-                            var city = doc.DocumentNode
-                                .Descendants("span")
-                                .First(x => x.Attributes.Contains("class") &&
-                                            x.Attributes["class"].Value == "city")
-                                .ChildNodes
-                                .First(x => x.Name == "a")
-                                .InnerText;
-
-                            var viewAll = "http://auto.ria.com" + doc.DocumentNode
-                                .Descendants("span")
-                                .First(x => x.Attributes.Contains("class") &&
-                                            x.Attributes["class"].Value == "view-all")
-                                .ChildNodes
-                                .First(x => x.Name == "a")
-                                .Attributes["href"].Value;
-
                             try
                             {
                                 var phone = doc.DocumentNode
@@ -330,7 +337,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.moto,
                                     Name = string.Empty,
-                                    Phone = "38" + Regex.Replace(phone, @"(^\+?38)?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                                     Site = SiteEnum.ria
                                 });
                             }
@@ -368,7 +375,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.moto,
                                     Name = Regex.Match(name, @"\w+(\s\w+){0,2}").Value,
-                                    Phone = "38" + Regex.Replace(phone, @"(^\+?38)?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                                     Site = SiteEnum.ria
                                 }));
                             }
@@ -420,31 +427,32 @@ namespace ParsingTelNumbers.Sites
                         Parallel.ForEach(ids, id =>
                         {
                             HtmlDocument doc;
+                            string city;
+                            string viewAll;
                             try
                             {
                                 doc = new HtmlWeb().Load("http://auto.ria.com/blocks_search/view/auto/" + id);
+
+                                city = doc.DocumentNode
+                                    .Descendants("span")
+                                    .First(x => x.Attributes.Contains("class") &&
+                                                x.Attributes["class"].Value == "city")
+                                    .ChildNodes
+                                    .First(x => x.Name == "a")
+                                    .InnerText;
+
+                                viewAll = "http://auto.ria.com" + doc.DocumentNode
+                                    .Descendants("span")
+                                    .First(x => x.Attributes.Contains("class") &&
+                                                x.Attributes["class"].Value == "view-all")
+                                    .ChildNodes
+                                    .First(x => x.Name == "a")
+                                    .Attributes["href"].Value;
                             }
                             catch
                             {
                                 return;
                             }
-
-                            var city = doc.DocumentNode
-                                .Descendants("span")
-                                .First(x => x.Attributes.Contains("class") &&
-                                            x.Attributes["class"].Value == "city")
-                                .ChildNodes
-                                .First(x => x.Name == "a")
-                                .InnerText;
-
-                            var viewAll = "http://auto.ria.com" + doc.DocumentNode
-                                .Descendants("span")
-                                .First(x => x.Attributes.Contains("class") &&
-                                            x.Attributes["class"].Value == "view-all")
-                                .ChildNodes
-                                .First(x => x.Name == "a")
-                                .Attributes["href"].Value;
-
                             try
                             {
                                 var phone = doc.DocumentNode
@@ -458,7 +466,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.aqua,
                                     Name = string.Empty,
-                                    Phone = "38" + Regex.Replace(phone, @"(^\+?38)?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                                     Site = SiteEnum.ria
                                 });
                             }
@@ -496,7 +504,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.aqua,
                                     Name = Regex.Match(name, @"\w+(\s\w+){0,2}").Value,
-                                    Phone = "38" + Regex.Replace(phone, @"(^\+?38)?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                                     Site = SiteEnum.ria
                                 }));
                             }
@@ -505,6 +513,9 @@ namespace ParsingTelNumbers.Sites
                     foreach (var id in ids)
                     {
                         HtmlDocument doc;
+                        string city;
+                        string viewAll;
+
                         try
                         {
                             doc = new HtmlWeb().Load("http://auto.ria.com/blocks_search/view/auto/" + id);
@@ -529,28 +540,27 @@ namespace ParsingTelNumbers.Sites
                                     return holdersList;
                                 continue;
                             }
+
+                            city = doc.DocumentNode
+                                .Descendants("span")
+                                .First(x => x.Attributes.Contains("class") &&
+                                            x.Attributes["class"].Value == "city")
+                                .ChildNodes
+                                .First(x => x.Name == "a")
+                                .InnerText;
+
+                            viewAll = "http://auto.ria.com" + doc.DocumentNode
+                                .Descendants("span")
+                                .First(x => x.Attributes.Contains("class") &&
+                                            x.Attributes["class"].Value == "view-all")
+                                .ChildNodes
+                                .First(x => x.Name == "a")
+                                .Attributes["href"].Value;
                         }
                         catch
                         {
                             continue;
                         }
-
-                        var city = doc.DocumentNode
-                            .Descendants("span")
-                            .First(x => x.Attributes.Contains("class") &&
-                                        x.Attributes["class"].Value == "city")
-                            .ChildNodes
-                            .First(x => x.Name == "a")
-                            .InnerText;
-
-                        var viewAll = "http://auto.ria.com" + doc.DocumentNode
-                            .Descendants("span")
-                            .First(x => x.Attributes.Contains("class") &&
-                                        x.Attributes["class"].Value == "view-all")
-                            .ChildNodes
-                            .First(x => x.Name == "a")
-                            .Attributes["href"].Value;
-
                         try
                         {
                             var phone = doc.DocumentNode
@@ -564,7 +574,7 @@ namespace ParsingTelNumbers.Sites
                                 City = city,
                                 Direction = DirectionEnum.aqua,
                                 Name = string.Empty,
-                                Phone = "38" + Regex.Replace(phone, @"(^\+?38)?(\(|\)|\s|\-)", string.Empty),
+                                Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                                 Site = SiteEnum.ria
                             });
                         }
@@ -600,7 +610,7 @@ namespace ParsingTelNumbers.Sites
                                 City = city,
                                 Direction = DirectionEnum.aqua,
                                 Name = Regex.Match(name, @"\w+(\s\w+){0,2}").Value,
-                                Phone = "38" + Regex.Replace(phone, @"(^\+?38)?(\(|\)|\s|\-)", string.Empty),
+                                Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
                                 Site = SiteEnum.ria
                             }));
                         }

@@ -55,14 +55,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sites\Motosale.cs" />
     <Compile Include="Sites\Ria.cs" />
+    <Compile Include="XmlWorker\DataXmlWorker.cs" />
     <Compile Include="XmlWorker\DateXmlWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Main.config">
+    <Content Include="Full.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </None>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
