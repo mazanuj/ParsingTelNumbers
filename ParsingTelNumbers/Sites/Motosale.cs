@@ -117,7 +117,7 @@ namespace ParsingTelNumbers.Sites
                                 Site = SiteEnum.motosale,
                                 Direction = DirectionEnum.spare,
                                 Name = name.Contains("сообщ. писать здесь") ? "-" : name,
-                                Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                                Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
                                 City = city
                             };
                         }
@@ -244,7 +244,7 @@ namespace ParsingTelNumbers.Sites
                             Site = SiteEnum.motosale,
                             Direction = DirectionEnum.equip,
                             Name = name.Contains("сообщ. писать здесь") ? "-" : name,
-                            Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                            Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
                             City = city
                         };
                     }).Where(infoHolder => infoHolder != null));
@@ -368,7 +368,7 @@ namespace ParsingTelNumbers.Sites
                             Site = SiteEnum.motosale,
                             Direction = DirectionEnum.moto,
                             Name = name.Contains("сообщ. писать здесь") ? "-" : name,
-                            Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                            Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
                             City = city
                         };
                     }).Where(infoHolder => infoHolder != null));

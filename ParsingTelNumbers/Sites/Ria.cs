@@ -129,7 +129,7 @@ namespace ParsingTelNumbers.Sites
                                     Direction = DirectionEnum.spare,
                                     Phone =
                                         "38" +
-                                        Regex.Replace(VARIABLE.ToString(), @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                                        Regex.Replace(VARIABLE.ToString(), @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
                                     Site = SiteEnum.ria
                                 });
                         }
@@ -225,7 +225,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.moto,
                                     Name = string.Empty,
-                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
                                     Site = SiteEnum.ria
                                 });
                             }
@@ -263,7 +263,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.moto,
                                     Name = Regex.Match(name, @"\w+(\s\w+){0,2}").Value,
-                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
                                     Site = SiteEnum.ria
                                 }));
                             }
@@ -299,7 +299,10 @@ namespace ParsingTelNumbers.Sites
                                         .InnerText;
 
                                     if (Regex.Match(itemChips, @"\d").Value == "0")
+                                    {
+                                        DateXmlWorker.SetDate(SiteEnum.ria, DirectionEnum.moto, DateTime.Now.ToString("dd.MM.yyyy"));
                                         return holdersList;
+                                    }
                                     continue;
                                 }
 
@@ -337,7 +340,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.moto,
                                     Name = string.Empty,
-                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
                                     Site = SiteEnum.ria
                                 });
                             }
@@ -375,7 +378,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.moto,
                                     Name = Regex.Match(name, @"\w+(\s\w+){0,2}").Value,
-                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
                                     Site = SiteEnum.ria
                                 }));
                             }
@@ -424,6 +427,7 @@ namespace ParsingTelNumbers.Sites
                     //If needs to parse all site data
                     //Use parallel
                     if (dateTrue == "")
+                    {
                         Parallel.ForEach(ids, id =>
                         {
                             HtmlDocument doc;
@@ -466,7 +470,7 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.aqua,
                                     Name = string.Empty,
-                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
                                     Site = SiteEnum.ria
                                 });
                             }
@@ -504,115 +508,124 @@ namespace ParsingTelNumbers.Sites
                                     City = city,
                                     Direction = DirectionEnum.aqua,
                                     Name = Regex.Match(name, @"\w+(\s\w+){0,2}").Value,
-                                    Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
+                                    Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
                                     Site = SiteEnum.ria
                                 }));
                             }
                         });
-                    //======================================================================================================//
-                    foreach (var id in ids)
+                    }
+                        //======================================================================================================//
+                    else
                     {
-                        HtmlDocument doc;
-                        string city;
-                        string viewAll;
-
-                        try
+                        foreach (var id in ids)
                         {
-                            doc = new HtmlWeb().Load("http://auto.ria.com/blocks_search/view/auto/" + id);
+                            HtmlDocument doc;
+                            string city;
+                            string viewAll;
 
-                            var adsDate = DateTime.Parse(
-                                doc.DocumentNode
+                            try
+                            {
+                                doc = new HtmlWeb().Load("http://auto.ria.com/blocks_search/view/auto/" + id);
+
+                                var adsDate = DateTime.Parse(
+                                    doc.DocumentNode
+                                        .Descendants("span")
+                                        .First(x => x.Attributes.Contains("class") &&
+                                                    x.Attributes["class"].Value == "date-add")
+                                        .Attributes["pvalue"].Value);
+
+                                if (trueDate.Year > adsDate.Year || trueDate.Month > adsDate.Month ||
+                                    trueDate.Day > adsDate.Day)
+                                {
+                                    var itemChips = doc.DocumentNode
+                                        .Descendants("a")
+                                        .First(x => x.Attributes.Contains("class") &&
+                                                    x.Attributes["class"].Value == "item icon-chips")
+                                        .InnerText;
+
+                                    if (Regex.Match(itemChips, @"\d").Value == "0")
+                                    {
+                                        DateXmlWorker.SetDate(SiteEnum.ria, DirectionEnum.aqua, DateTime.Now.ToString("dd.MM.yyyy"));
+                                        return holdersList;
+                                    }
+                                    continue;
+                                }
+
+                                city = doc.DocumentNode
                                     .Descendants("span")
                                     .First(x => x.Attributes.Contains("class") &&
-                                                x.Attributes["class"].Value == "date-add")
-                                    .Attributes["pvalue"].Value);
-
-                            if (trueDate.Year > adsDate.Year || trueDate.Month > adsDate.Month ||
-                                trueDate.Day > adsDate.Day)
-                            {
-                                var itemChips = doc.DocumentNode
-                                    .Descendants("a")
-                                    .First(x => x.Attributes.Contains("class") &&
-                                                x.Attributes["class"].Value == "item icon-chips")
+                                                x.Attributes["class"].Value == "city")
+                                    .ChildNodes
+                                    .First(x => x.Name == "a")
                                     .InnerText;
 
-                                if (Regex.Match(itemChips, @"\d").Value == "0")
-                                    return holdersList;
+                                viewAll = "http://auto.ria.com" + doc.DocumentNode
+                                    .Descendants("span")
+                                    .First(x => x.Attributes.Contains("class") &&
+                                                x.Attributes["class"].Value == "view-all")
+                                    .ChildNodes
+                                    .First(x => x.Name == "a")
+                                    .Attributes["href"].Value;
+                            }
+                            catch
+                            {
                                 continue;
                             }
-
-                            city = doc.DocumentNode
-                                .Descendants("span")
-                                .First(x => x.Attributes.Contains("class") &&
-                                            x.Attributes["class"].Value == "city")
-                                .ChildNodes
-                                .First(x => x.Name == "a")
-                                .InnerText;
-
-                            viewAll = "http://auto.ria.com" + doc.DocumentNode
-                                .Descendants("span")
-                                .First(x => x.Attributes.Contains("class") &&
-                                            x.Attributes["class"].Value == "view-all")
-                                .ChildNodes
-                                .First(x => x.Name == "a")
-                                .Attributes["href"].Value;
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                        try
-                        {
-                            var phone = doc.DocumentNode
-                                .Descendants("span")
-                                .First(x => x.Attributes.Contains("class") &&
-                                            x.Attributes["class"].Value == "phone")
-                                .InnerText;
-
-                            holdersList.Add(new InfoHolder
+                            try
                             {
-                                City = city,
-                                Direction = DirectionEnum.aqua,
-                                Name = string.Empty,
-                                Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
-                                Site = SiteEnum.ria
-                            });
-                        }
-                        catch (Exception)
-                        {
-                            doc = new HtmlWeb().Load(viewAll);
-
-                            var phoneBlock = doc.GetElementbyId("final_page__user_phone_block");
-                            if (phoneBlock == null)
-                                continue;
-
-                            var phones = phoneBlock.ChildNodes
-                                .Descendants("strong")
-                                .Where(x => x.Attributes.Contains("class") &&
-                                            x.Attributes["class"].Value == "phone")
-                                .Select(x => x.InnerText);
-
-                            var name = string.Empty;
-
-                            if (
-                                doc.DocumentNode.Descendants("dt")
-                                    .Any(
-                                        x =>
-                                            x.Attributes.Contains("class") && x.Attributes["class"].Value == "user-name"))
-                                name = doc.DocumentNode.Descendants("dt")
-                                    .First(
-                                        x =>
-                                            x.Attributes.Contains("class") && x.Attributes["class"].Value == "user-name")
+                                var phone = doc.DocumentNode
+                                    .Descendants("span")
+                                    .First(x => x.Attributes.Contains("class") &&
+                                                x.Attributes["class"].Value == "phone")
                                     .InnerText;
 
-                            holdersList.AddRange(phones.Select(phone => new InfoHolder
+                                holdersList.Add(new InfoHolder
+                                {
+                                    City = city,
+                                    Direction = DirectionEnum.aqua,
+                                    Name = string.Empty,
+                                    Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
+                                    Site = SiteEnum.ria
+                                });
+                            }
+                            catch (Exception)
                             {
-                                City = city,
-                                Direction = DirectionEnum.aqua,
-                                Name = Regex.Match(name, @"\w+(\s\w+){0,2}").Value,
-                                Phone = "38" + Regex.Replace(phone, @"(^(.*\+?38))?(\(|\)|\s|\-)", string.Empty),
-                                Site = SiteEnum.ria
-                            }));
+                                doc = new HtmlWeb().Load(viewAll);
+
+                                var phoneBlock = doc.GetElementbyId("final_page__user_phone_block");
+                                if (phoneBlock == null)
+                                    continue;
+
+                                var phones = phoneBlock.ChildNodes
+                                    .Descendants("strong")
+                                    .Where(x => x.Attributes.Contains("class") &&
+                                                x.Attributes["class"].Value == "phone")
+                                    .Select(x => x.InnerText);
+
+                                var name = string.Empty;
+
+                                if (
+                                    doc.DocumentNode.Descendants("dt")
+                                        .Any(
+                                            x =>
+                                                x.Attributes.Contains("class") &&
+                                                x.Attributes["class"].Value == "user-name"))
+                                    name = doc.DocumentNode.Descendants("dt")
+                                        .First(
+                                            x =>
+                                                x.Attributes.Contains("class") &&
+                                                x.Attributes["class"].Value == "user-name")
+                                        .InnerText;
+
+                                holdersList.AddRange(phones.Select(phone => new InfoHolder
+                                {
+                                    City = city,
+                                    Direction = DirectionEnum.aqua,
+                                    Name = Regex.Match(name, @"\w+(\s\w+){0,2}").Value,
+                                    Phone = "38" + Regex.Replace(phone, @"(^\s*\+?(38)?)?(\(|\)|\s|\-)?", string.Empty),
+                                    Site = SiteEnum.ria
+                                }));
+                            }
                         }
                     }
                 }
